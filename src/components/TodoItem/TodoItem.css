@@ -44,3 +44,8 @@
 	margin-left: 10px;
 	line-height: 32px;
 }
+
+.todo-item__done>span {
+	text-decoration: line-through;
+	opacity: .3;
+}
