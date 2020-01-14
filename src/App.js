@@ -10,12 +10,18 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      newItem: '',
       todoItems: [
         { title: "Viết App", isComplete: true },
         { title: "Viết App 2", isComplete: false },
         { title: "Viết App 3", isComplete: false }
       ]
     }
+
+    // === FIX ERROR ===
+    // TypeError: Cannot read property 'setSate' of undefined
+    this.onChange = this.onChange.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
   }
 
   // Handling events
@@ -37,10 +43,37 @@ class App extends Component {
       })
     }
   }
+  onChange(event) {
+    this.setState({
+      newItem: event.target.value
+    })
+  }
+  onKeyUp(event) {
+    // console.log(event.keyCode);
+    // console.log(event.target.value);
+
+    if (event.keyCode === 13) { // Enter key code
+      let text = event.target.value;
+      if (!text) { return; }
+      text = text.trim();
+      if (!text) { return; }
+
+      this.setState({
+        newItem: '',
+        todoItems: [ // Immuability Array
+          {
+            title: text,
+            isComplete: false
+          },
+          ...this.state.todoItems // Copy tất cả phần tử của mảng todoItems
+        ]
+      })
+    }
+  }
 
   render() {
 
-    const { todoItems } = this.state;
+    const { todoItems, newItem } = this.state;
 
     // Conditional Rendering (AND..OR)
     return (
@@ -53,7 +86,12 @@ class App extends Component {
           <aside className="todo-list">
             <section className="todo-header">
               <img className="check-all" src={tick} width={32} height={32} alt="check all" />
-              <input type="text" className="new-item" placeholder="Add new item" />
+              <input type="text" placeholder="Add new item"
+                className="new-item"
+                value={newItem}
+                onChange={this.onChange}
+                onKeyUp={this.onKeyUp}
+              />
             </section>
             <section className="todo-content">
               {
